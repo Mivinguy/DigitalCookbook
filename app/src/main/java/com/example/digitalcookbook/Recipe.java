@@ -7,16 +7,18 @@ public class Recipe {
     private HashMap<String, String> ingredients;
     private HashMap<String, String> steps;
     private String title;
+    private String category;
 
     public Recipe() {
 
     }
 
-    public Recipe(String image, HashMap<String, String> ingredients, HashMap<String, String> steps, String title){
+    public Recipe(String image, HashMap<String, String> ingredients, HashMap<String, String> steps, String title, String category){
         this.image = image;
         this.ingredients = ingredients;
         this.steps = steps;
         this.title = title;
+        this.category = category;
     }
 
     public String getImage() {
@@ -34,5 +36,8 @@ public class Recipe {
     public String getTitle() {
         return title;
     }
+
+    public String getCategory() { return category; }
+
 
 }
