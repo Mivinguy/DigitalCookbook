@@ -21,7 +21,7 @@ public class DbHelper {
         this.db = db;
     }
 
-    // Create new Recipe into recipe
+    // Create new Recipe
     public Boolean save(Recipe recipe) {
         if(recipe==null)
         {
@@ -42,7 +42,7 @@ public class DbHelper {
         return saved;
     }
 
-    //Read from database General
+    //Read from database
     public ArrayList<Recipe> read()
     {
         db.addChildEventListener(new ChildEventListener() {
@@ -76,41 +76,7 @@ public class DbHelper {
         return recipeList;
     }
 
-    //Read from database passing in adapter for recyclerView
-    public ArrayList<Recipe> read(final RecipeAdapter adapter)
-    {
-        db.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, @Nullable String s) {
-                fetchData(dataSnapshot,adapter);
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, @Nullable  String s) {
-                fetchData(dataSnapshot,adapter);
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        return recipeList;
-    }
-
-    // General use
+    // Read data
     private void fetchData(DataSnapshot dataSnapshot)
     {
         recipeList.clear();
@@ -120,17 +86,4 @@ public class DbHelper {
             recipeList.add(recipe);
         }
     }
-
-    // Used with adapter
-    private void fetchData(DataSnapshot dataSnapshot, RecipeAdapter adapter)
-    {
-        recipeList.clear();
-        for (DataSnapshot ds : dataSnapshot.getChildren())
-        {
-            Recipe recipe =ds.getValue(Recipe.class);
-            recipeList.add(recipe);
-        }
-        adapter.notifyDataSetChanged();
-    }
-
 }
