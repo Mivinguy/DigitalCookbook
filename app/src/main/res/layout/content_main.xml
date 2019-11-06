@@ -18,13 +18,13 @@
         android:gravity="center"
         android:textColor="@android:color/black"
         android:text="Categories"
-        android:textSize="60sp">
+        android:textSize="50sp">
     </androidx.appcompat.widget.AppCompatTextView>
 
     <androidx.gridlayout.widget.GridLayout
         android:id="@+id/grid"
-        android:layout_weight="8"
-        app:rowCount="2"
+        android:layout_weight="9"
+        app:rowCount="3"
         app:columnCount="2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -50,23 +50,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Breakfast"
-                    android:textStyle="bold"
-                    android:textSize="24sp"
-                    android:gravity="center"
-                    android:textColor="@color/colorAccent">
-                </androidx.appcompat.widget.AppCompatTextView>
-
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/cat_bar"
                     android:background="@android:color/black"/>
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:src="@drawable/category_breakfast"
+                    android:src="@drawable/category_appetizer"
                     android:layout_gravity="center_horizontal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
@@ -95,23 +86,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Lunch"
-                    android:textStyle="bold"
-                    android:textSize="24sp"
-                    android:gravity="center"
-                    android:textColor="@color/colorAccent">
-                </androidx.appcompat.widget.AppCompatTextView>
-
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/cat_bar"
                     android:background="@android:color/black"/>
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:src="@drawable/category_lunch"
+                    android:src="@drawable/category_breakfast"
                     android:layout_gravity="center_horizontal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
@@ -140,23 +122,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Dinner"
-                    android:textStyle="bold"
-                    android:textSize="24sp"
-                    android:gravity="center"
-                    android:textColor="@color/colorAccent">
-                </androidx.appcompat.widget.AppCompatTextView>
-
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/cat_bar"
                     android:background="@android:color/black"/>
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:src="@drawable/category_dinner"
+                    android:src="@drawable/category_dessert"
                     android:layout_gravity="center_horizontal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
@@ -186,29 +159,89 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Favourites"
-                    android:textStyle="bold"
-                    android:textSize="24sp"
-                    android:gravity="center"
-                    android:textColor="@color/colorAccent">
-                </androidx.appcompat.widget.AppCompatTextView>
-
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/cat_bar"
                     android:background="@android:color/black"/>
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:src="@drawable/favourites"
+                    android:src="@drawable/category_dinner"
                     android:layout_gravity="center_horizontal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                 </androidx.appcompat.widget.AppCompatImageView>
             </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.cardview.widget.CardView>
 
+        <!-- Row 3  -->
+        <!-- Column 1  -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            app:cardElevation="8dp"
+            app:cardCornerRadius="8dp">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_margin="16dp"
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="@dimen/cat_bar"
+                    android:layout_height="1dp"
+                    android:background="@android:color/black"/>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:src="@drawable/category_drink"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                </androidx.appcompat.widget.AppCompatImageView>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Row 3  -->
+        <!-- Column 2  -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            app:cardElevation="8dp"
+            app:cardCornerRadius="8dp">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:layout_margin="16dp"
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/cat_bar"
+                    android:background="@android:color/black"/>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:src="@drawable/category_lunch"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                </androidx.appcompat.widget.AppCompatImageView>
+            </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.cardview.widget.CardView>
     </androidx.gridlayout.widget.GridLayout>
 

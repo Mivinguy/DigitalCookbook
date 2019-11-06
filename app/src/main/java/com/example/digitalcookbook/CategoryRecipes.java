@@ -1,21 +1,17 @@
 package com.example.digitalcookbook;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
+import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class CategoryRecipes extends AppCompatActivity {
-
-
-    DatabaseReference db;
     RecyclerView recView;
     RecipeAdapter adapter;
     ArrayList<Recipe> recipeList = new ArrayList<>();
@@ -29,25 +25,40 @@ public class CategoryRecipes extends AppCompatActivity {
 
         // Get category chosen from bundle
         Bundle extras = getIntent().getExtras();
-        final int cat = extras.getInt("Category");
+        final int cat = extras.getInt("com.example.digitalcookbook.Category");
         category = setCategory(cat);
+        Log.d("com.example.digitalcookbook.Category", "com.example.digitalcookbook.Category is: " + category);
 
         // RecyclerView
         recView = (RecyclerView) findViewById(R.id.recycler_view);
         recView.setLayoutManager(new LinearLayoutManager(this));
-        Log.d("Category","Category Chosen: " + category);
-        Log.d("Category","recipeList length Before: " + recipeList.size());
-
-        // RecyclerView Adapter
-        adapter = new RecipeAdapter(this,recipeList);
-        recView.setAdapter(adapter);
 
         // Firebase
-        db= FirebaseDatabase.getInstance().getReference();
-        helper=new DbHelper(db);
-        recipeList = helper.read(adapter);
-        Log.d("Category","recipeList length AFTER: " + recipeList.size());
+        // Get a reference to our Recipes
+        final FirebaseDatabase db  = FirebaseDatabase.getInstance();
+        DatabaseReference ref = db.getReference(category);
 
+        // Attach a listener to read the data on change, updates recyclerview
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                recipeList.clear();
+                for (DataSnapshot ds : dataSnapshot.getChildren())
+                {
+                    Recipe recipe =ds.getValue(Recipe.class);
+                    recipeList.add(recipe);
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+        helper=new DbHelper(ref);
+        adapter = new RecipeAdapter(this, recipeList);
+        recView.setAdapter(adapter);
     }
 
     public String setCategory(int num) {
@@ -55,22 +66,22 @@ public class CategoryRecipes extends AppCompatActivity {
         switch(num)
         {
             case 0:
-                category = "Breakfast and Brunch";
-                break;
-            case 1:
-                category = "Lunch";
-                break;
-            case 2:
-                category = "Dinner";
-                break;
-            case 3:
                 category = "Appetizers and Snacks";
                 break;
+            case 1:
+                category = "Breakfast and Brunch";
+                break;
+            case 2:
+                category = "Dessert";
+                break;
+            case 3:
+                category = "Dinner";
+                break;
             case 4:
-                category = "Desserts";
+                category = "Drinks";
                 break;
             case 5:
-                category = "Drinks";
+                category = "Lunch";
                 break;
         }
         return category;
