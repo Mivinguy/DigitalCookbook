@@ -33,6 +33,12 @@ class Recipe:
             string += i + "\n"
         return string
 
+    def __lt__(self, other):
+        return self.title < other.title
+
+    def __gt__(self, other):
+        return self.title > other.title
+
     def ingredientsToDict(self):
         ing = {}
         count = 1
@@ -57,6 +63,8 @@ class Recipe:
         return hasattr(self, 'title') and hasattr(self, 'category')
 
 class Scraper:
+    unknownCategoriesCount = 0
+
     def scrapeURL(self, url, category):
         recipe = Recipe()
         try:
@@ -95,7 +103,7 @@ class Scraper:
         else:
             print("HTTP request succeeded")
         return recipe
-    def scrapeURLS(self, url):
+    def scrapeURLS(self, url, max):
         urls = []
         try:
             page = requests.get(url)
@@ -104,10 +112,13 @@ class Scraper:
             recipeClass = parser.find_all(class_="fixed-recipe-card__title-link", href=True)
             recipe = recipeClass
             count = 1
-            for i in recipeClass:
+            urlsAvailable = len(recipeClass)
+            if max < urlsAvailable:
+                urlsAvailable = max
+            for i in recipeClass[0:urlsAvailable]:
                 urls.append(i['href'])
                 time.sleep(1 + random.random()*4)
-                print("URL scraper, getting url " + str(count)  + " of " + str(len(recipeClass)))
+                print("URL scraper, getting url " + str(count) + " of " + str(urlsAvailable))
                 count += 1
         except HTTPError as httpError:
             print("HTTP Error :", httpError)
@@ -117,22 +128,36 @@ class Scraper:
         else:
             print("HTTP request succeeded")
         return urls
-    def scrapeCategories(self, url, number):
-        recipes = []
+
+    def scrapCategoryName(self, url):
         try:
             page = requests.get(url)
             page.raise_for_status()
             parser = BeautifulSoup(page.text, 'html.parser')
             categorySpan = parser.find(class_="title-section__text title")
-            category = categorySpan.contents[0]
+            return categorySpan.contents[0]
+        except HTTPError as httpError:
+            self.unknownCategoriesCount += 1
+            print("HTTP Error :", httpError)
+            return "Unknown Category: " + str(self.unknownCategoriesCount)
+        except Exception as error:
+            self.unknownCategoriesCount += 1
+            print("Other error: ", error)
+            print(traceback.format_exc())
+            return "Unknown Category: " + str(self.unknownCategoriesCount)
+
+    def scrapeCategories(self, url, number):
+        recipes = []
+        try:
+            category = self.scrapCategoryName(url)
             recipes = []
             recipeUrls = []
             count = 1
             page = 0
-            while count < number:
+            while count < number+1:
                 print("Category scraper getting recipe " + str(count) + " of " + str(number))
                 while len(recipeUrls) < 1:
-                    recipeUrls.extend(self.scrapeURLS(url + "?page=" + str(page)))
+                    recipeUrls.extend(self.scrapeURLS(url + "?page=" + str(page), number - count + 1))
                     page += 2
                 recipe = self.scrapeURL(recipeUrls.pop(0), category)
                 if recipe.check():
@@ -162,7 +187,9 @@ def main():
     s = Scraper()
     recipes = []
     for u in urls:
-        recipes.extend(s.scrapeCategories(u,urlCounts.pop(0)))
+        temp = s.scrapeCategories(u,urlCounts.pop(0))
+        temp.sort()
+        recipes.extend(temp)
     data = {}
     count = 0
     for i in recipes:
