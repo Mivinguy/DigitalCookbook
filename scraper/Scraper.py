@@ -1,3 +1,5 @@
+from os import path
+
 import requests
 import time
 import random
@@ -14,10 +16,10 @@ def clear():
         os.system('clear')
 
 class Recipe:
-
     def __init__(self):
         title = ""
         image = ""
+        imageFileName = ""
         category = ""
         ingredients = []
         steps = []
@@ -56,11 +58,25 @@ class Recipe:
         return steps
 
     def recipeToDict(self):
-        dict = {'title': self.title, 'image': self.image, 'ingredients': self.ingredientsToDict(), 'steps': self.stepsToDict()}
+        if len(self.imageFileName) < 1:
+            self.imageFileName = "Default.jpg"
+        dict = {'title': self.title, 'image': self.image, 'imageFileName': self.imageFileName, 'ingredients': self.ingredientsToDict(), 'steps': self.stepsToDict()}
         return dict
 
+    def setUpImage(self):
+        try:
+            file = open("resources\\" + self.title + ".jpg", 'wb')
+            file.write(requests.get(self.image).content)
+            self.imageFileName = self.title + ".jpg"
+            return True
+        except Exception as error:
+            self.imageFileName = "Default.jpg"
+            print(traceback.format_exc())
+            print("Image request error")
+            return False
+
     def check(self):
-        return hasattr(self, 'title') and hasattr(self, 'category')
+        return hasattr(self, 'title') and hasattr(self, 'category') and hasattr(self, 'image')
 
 class Scraper:
     unknownCategoriesCount = 0
@@ -100,8 +116,6 @@ class Scraper:
             print("Other error: ", error)
             print(traceback.format_exc())
             print("Error with url: " + url)
-        else:
-            print("HTTP request succeeded")
         return recipe
     def scrapeURLS(self, url, max):
         urls = []
@@ -110,14 +124,13 @@ class Scraper:
             page.raise_for_status()
             parser = BeautifulSoup(page.text, 'html.parser')
             recipeClass = parser.find_all(class_="fixed-recipe-card__title-link", href=True)
-            recipe = recipeClass
             count = 1
             urlsAvailable = len(recipeClass)
             if max < urlsAvailable:
                 urlsAvailable = max
             for i in recipeClass[0:urlsAvailable]:
                 urls.append(i['href'])
-                time.sleep(1 + random.random()*4)
+                time.sleep(1 + random.random()*2)
                 print("URL scraper, getting url " + str(count) + " of " + str(urlsAvailable))
                 count += 1
         except HTTPError as httpError:
@@ -125,8 +138,6 @@ class Scraper:
         except Exception as error:
             print("Other error: ", error)
             print(traceback.format_exc())
-        else:
-            print("HTTP request succeeded")
         return urls
 
     def scrapCategoryName(self, url):
@@ -160,10 +171,10 @@ class Scraper:
                     recipeUrls.extend(self.scrapeURLS(url + "?page=" + str(page), number - count + 1))
                     page += 2
                 recipe = self.scrapeURL(recipeUrls.pop(0), category)
-                if recipe.check():
+                if recipe.check() and recipe.setUpImage():
                     recipes.append(recipe)
                     count += 1
-                    time.sleep(1 + random.random() * 4)
+                    time.sleep(1 + random.random() * 2)
                 else:
                     print("scrapeURL error")
         except HTTPError as httpError:
@@ -171,8 +182,6 @@ class Scraper:
         except Exception as error:
             print("Other error: ", error)
             print(traceback.format_exc())
-        else:
-            print("HTTP request succeeded")
         return recipes
 
 def main():
