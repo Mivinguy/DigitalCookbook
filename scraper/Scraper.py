@@ -45,7 +45,7 @@ class Recipe:
         ing = {}
         count = 1
         for i in self.ingredients:
-            ing['i' + str(count)] = i
+            ing['i' + str(count).zfill(4)] = i
             count += 1
         return ing
 
@@ -53,7 +53,7 @@ class Recipe:
         steps = {}
         count = 1
         for i in self.steps:
-            steps['s' + str(count)] = i
+            steps['s' + str(count).zfill(4)] = i
             count += 1
         return steps
 
@@ -204,7 +204,7 @@ def main():
     for i in recipes:
         if not i.category in data:
             data[i.category] = {}
-        data[i.category]["r" + str(count)] = i.recipeToDict()
+        data[i.category]["r" + str(count).zfill(4)] = i.recipeToDict()
         count += 1
     with open('recipes.json', 'w') as output:
         json.dump(data, output)
