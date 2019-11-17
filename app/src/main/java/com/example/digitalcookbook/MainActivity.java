@@ -114,8 +114,9 @@ public class MainActivity extends AppCompatActivity {
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(MainActivity.this, CategoryRecipes.class);
-                    intent.putExtra("com.example.digitalcookbook.Category",selected);
+                    Intent intent = new Intent(MainActivity.this, RecipeView.class);
+                    intent.putExtra("Category", "Dinner");
+                    intent.putExtra("RecipeKey", "r242");
                     startActivity(intent);
                 }
             });
