@@ -76,8 +76,11 @@ public class RecipeView extends AppCompatActivity {
                 }
 
                 //what to say
-                String toSpeak = steps.get("Step" + currentStepNum);
-
+                TextView ShowSteps = (TextView)findViewById(R.id.stepsList);
+                CharSequence charSequence = ShowSteps.getText();
+                final StringBuilder sb = new StringBuilder(charSequence.length());
+                sb.append(charSequence);
+                String toSpeak = sb.toString();
                 currentStepTTS.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null, null);
             }
 
