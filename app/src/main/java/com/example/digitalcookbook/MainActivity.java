@@ -1,5 +1,6 @@
 package com.example.digitalcookbook;
 import android.content.Intent;
+import android.gesture.GestureOverlayView;
 import android.graphics.Color;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -10,6 +11,7 @@ import androidx.cardview.widget.CardView;
 import androidx.gridlayout.widget.GridLayout;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Menu;
@@ -24,11 +26,26 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
+import android.os.Vibrator;
+import androidx.core.view.GestureDetectorCompat;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
+import android.view.MotionEvent;
 
 public class MainActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     ArrayList<String> category_names = new ArrayList<>();
     GridLayout mainGrid;
+
+    SensorManager sensorManager;
+    Sensor accelerometer;
+    Sensor gyroscope;
+    Vibrator vibrator;
+
+    private final String TAG = "GestureDemo";
+    private GestureDetectorCompat mDetector;
+
+    float threshold;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +58,47 @@ public class MainActivity extends AppCompatActivity {
         // Firebase
         // Get a reference to database
         mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        // Accelerometer and Vibration
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        if(sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+            threshold = accelerometer.getMaximumRange()/8;
+        }
+        vibrator = (Vibrator)getSystemService(VIBRATOR_SERVICE);
+
+        mDetector = new GestureDetectorCompat(this, new GestureDetector.OnGestureListener() {
+            @Override
+            public boolean onDown(MotionEvent e) {
+                return false;
+            }
+
+            @Override
+            public void onShowPress(MotionEvent e) {
+
+            }
+
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                return false;
+            }
+
+            @Override
+            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+                return false;
+            }
+
+            @Override
+            public void onLongPress(MotionEvent e) {
+
+            }
+
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                return false;
+            }
+        });
 
         // Read in categories and assign to categories list
         mDatabase.addChildEventListener(new ChildEventListener() {
@@ -119,6 +177,42 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
+        }
+    }
+
+    private class MyGestureListener implements GestureDetector.OnGestureListener {
+        @Override
+        public boolean onDown(MotionEvent e) {
+            Log.d(TAG, "onDown");
+            return true;
+        }
+
+        @Override
+        public void onShowPress(MotionEvent e) {
+            Log.d(TAG, "onShowPress");
+        }
+
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            Log.d(TAG, "onSingleTapUp");
+            return false;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            Log.d(TAG, "onScroll");
+            return false;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            Log.d(TAG, "onLongPress");
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            Log.d(TAG, "onFling");
+            return false;
         }
     }
 
