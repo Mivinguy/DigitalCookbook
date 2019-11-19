@@ -1,6 +1,7 @@
 package com.example.digitalcookbook;
 
 import android.content.Intent;
+import android.hardware.SensorEvent;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
@@ -22,7 +23,17 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class RecipeView extends AppCompatActivity {
+import android.os.Vibrator;
+import androidx.core.view.GestureDetectorCompat;
+import android.hardware.Sensor;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.view.MotionEvent;
+import android.widget.Toast;
+import java.lang.StrictMath;
+import android.view.GestureDetector;
+
+public class RecipeView extends AppCompatActivity implements SensorEventListener {
     Recipe recipe;
     HashMap<String, String> ingredients = new HashMap<>();
     HashMap<String, String> steps = new HashMap<>();
@@ -31,6 +42,18 @@ public class RecipeView extends AppCompatActivity {
     int currentStepNum = 1;
     int stepNum = 1;
     int ingrNum = 1;
+
+    SensorManager sensorManager;
+    Sensor accelerometer;
+    Vibrator vibrator;
+    private final String TAG = "GestureDemo";
+    private GestureDetectorCompat mDetector;
+    private static final int SHAKE_THRESHOLD = 800;
+    long lastUpdate;
+    float threshold;
+    float prevX;
+    float prevY;
+    float prevZ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +84,44 @@ public class RecipeView extends AppCompatActivity {
             ShowSteps.setText(ShowSteps.getText() + "\n" + entry.getValue());
         }
 
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        if(sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            threshold = accelerometer.getMaximumRange()/8;
+        }
+        vibrator = (Vibrator)getSystemService(VIBRATOR_SERVICE);
+
+        mDetector = new GestureDetectorCompat(this, new GestureDetector.OnGestureListener() {
+            @Override
+            public boolean onDown(MotionEvent e) {
+                return false;
+            }
+
+            @Override
+            public void onShowPress(MotionEvent e) {
+
+            }
+
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                return false;
+            }
+
+            @Override
+            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+                return false;
+            }
+
+            @Override
+            public void onLongPress(MotionEvent e) {
+
+            }
+
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                return false;
+            }
+        });
 
         readNextStep.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,14 +148,88 @@ public class RecipeView extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
     public void onPause(){
         if(currentStepTTS !=null){
             currentStepTTS.stop();
             currentStepTTS.shutdown();
         }
+        sensorManager.unregisterListener(this);
         super.onPause();
     }
 
+    private class MyGestureListener implements GestureDetector.OnGestureListener {
+        @Override
+        public boolean onDown(MotionEvent e) {
+            Log.d(TAG, "onDown");
+            return true;
+        }
+
+        @Override
+        public void onShowPress(MotionEvent e) {
+            Log.d(TAG, "onShowPress");
+        }
+
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            Log.d(TAG, "onSingleTapUp");
+            return false;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            Log.d(TAG, "onScroll");
+            return false;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            Log.d(TAG, "onLongPress");
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            Log.d(TAG, "onFling");
+            return false;
+        }
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        float ax, ay, az;
+
+        ax = event.values[0];
+        ay = event.values[1];
+        az = event.values[2];
+
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            long currTime = System.currentTimeMillis();
+            // check in intervals of 100 milliseconds
+            if ((currTime - lastUpdate) > 100) {
+                long diffTime = (currTime - lastUpdate);
+                lastUpdate = currTime;
+
+                float speed = Math.abs(ax+ay+az - prevX - prevY - prevZ) / diffTime * 10000;
+
+                if (speed > SHAKE_THRESHOLD) {
+                    Toast.makeText(this, "Device was shaken", Toast.LENGTH_SHORT).show();
+                }
+
+                prevX = ax;
+                prevY = ay;
+                prevZ = az;
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    }
 
 }
 
