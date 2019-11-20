@@ -9,12 +9,14 @@ import traceback
 from requests.exceptions import HTTPError
 from bs4 import BeautifulSoup
 
+#clear console
 def clear():
     if os.name == 'nt':
         os.system('cls')
     else:
         os.system('clear')
 
+#Stores recipe info
 class Recipe:
     def __init__(self):
         title = ""
@@ -63,11 +65,11 @@ class Recipe:
         dict = {'title': self.title, 'image': self.image, 'imageFileName': self.imageFileName, 'ingredients': self.ingredientsToDict(), 'steps': self.stepsToDict()}
         return dict
 
-    def setUpImage(self):
+    def setUpImage(self, num):
         try:
-            file = open("resources\\" + self.title + ".jpg", 'wb')
+            file = open("resources\\" + "image" + str(num) + ".jpg", 'wb')
             file.write(requests.get(self.image).content)
-            self.imageFileName = self.title + ".jpg"
+            self.imageFileName = "image" + str(num) + ".jpg"
             return True
         except Exception as error:
             self.imageFileName = "Default.jpg"
@@ -80,7 +82,9 @@ class Recipe:
 
 class Scraper:
     unknownCategoriesCount = 0
+    imageCount = 0
 
+    #scrape recipe info from allrecipes.com url, returns recipe object
     def scrapeURL(self, url, category):
         recipe = Recipe()
         try:
@@ -117,6 +121,8 @@ class Scraper:
             print(traceback.format_exc())
             print("Error with url: " + url)
         return recipe
+
+    #scrapes a list of recipe urls from a category url
     def scrapeURLS(self, url, max):
         urls = []
         try:
@@ -130,7 +136,7 @@ class Scraper:
                 urlsAvailable = max
             for i in recipeClass[0:urlsAvailable]:
                 urls.append(i['href'])
-                time.sleep(1 + random.random()*2)
+                time.sleep(random.random()*2)
                 print("URL scraper, getting url " + str(count) + " of " + str(urlsAvailable))
                 count += 1
         except HTTPError as httpError:
@@ -140,7 +146,8 @@ class Scraper:
             print(traceback.format_exc())
         return urls
 
-    def scrapCategoryName(self, url):
+    #scrapes the name of a category from a category url
+    def scrapeCategoryName(self, url):
         try:
             page = requests.get(url)
             page.raise_for_status()
@@ -157,10 +164,11 @@ class Scraper:
             print(traceback.format_exc())
             return "Unknown Category: " + str(self.unknownCategoriesCount)
 
+    #Scrapes recipes from a category, returns a list of recipe objects with info from it
     def scrapeCategories(self, url, number):
         recipes = []
         try:
-            category = self.scrapCategoryName(url)
+            category = self.scrapeCategoryName(url)
             recipes = []
             recipeUrls = []
             count = 1
@@ -171,10 +179,11 @@ class Scraper:
                     recipeUrls.extend(self.scrapeURLS(url + "?page=" + str(page), number - count + 1))
                     page += 2
                 recipe = self.scrapeURL(recipeUrls.pop(0), category)
-                if recipe.check() and recipe.setUpImage():
+                if recipe.check() and recipe.setUpImage(self.imageCount):
                     recipes.append(recipe)
                     count += 1
-                    time.sleep(1 + random.random() * 2)
+                    self.imageCount += 1
+                    time.sleep(random.random() * 2)
                 else:
                     print("scrapeURL error")
         except HTTPError as httpError:
