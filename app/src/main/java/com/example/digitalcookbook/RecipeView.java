@@ -48,12 +48,14 @@ public class RecipeView extends AppCompatActivity implements SensorEventListener
     Vibrator vibrator;
     private final String TAG = "GestureDemo";
     private GestureDetectorCompat mDetector;
-    private static final int SHAKE_THRESHOLD = 800;
+    private static final int SHAKE_THRESHOLD = 100;
     long lastUpdate;
     float threshold;
     float prevX;
     float prevY;
     float prevZ;
+
+    boolean buttonPressed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +128,8 @@ public class RecipeView extends AppCompatActivity implements SensorEventListener
         readNextStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                buttonPressed = true; // turns on sensor
+
                 //if we want it to be loopable
                 if (currentStepNum > steps.size()) {
                     currentStepNum = 1;
@@ -208,21 +212,23 @@ public class RecipeView extends AppCompatActivity implements SensorEventListener
         az = event.values[2];
 
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            long currTime = System.currentTimeMillis();
-            // check in intervals of 100 milliseconds
-            if ((currTime - lastUpdate) > 100) {
-                long diffTime = (currTime - lastUpdate);
-                lastUpdate = currTime;
+            if(buttonPressed = true) {
+                long currTime = System.currentTimeMillis();
+                // check in intervals of 25 milliseconds
+                if ((currTime - lastUpdate) > 25) {
+                    long diffTime = (currTime - lastUpdate);
+                    lastUpdate = currTime;
 
-                float speed = Math.abs(ax+ay+az - prevX - prevY - prevZ) / diffTime * 10000;
+                    float speed = Math.abs(ax + ay + az - prevX - prevY - prevZ) / diffTime * 10000;
 
-                if (speed > SHAKE_THRESHOLD) {
-                    Toast.makeText(this, "Device was shaken", Toast.LENGTH_SHORT).show();
+                    if (speed > SHAKE_THRESHOLD) {
+                        Toast.makeText(this, "Device was shaken", Toast.LENGTH_SHORT).show();
+                    }
+
+                    prevX = ax;
+                    prevY = ay;
+                    prevZ = az;
                 }
-
-                prevX = ax;
-                prevY = ay;
-                prevZ = az;
             }
         }
     }
