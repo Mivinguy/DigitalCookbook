@@ -3,45 +3,44 @@ package com.example.digitalcookbook;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.annotations.Nullable;
-
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Scanner;
 
 public class RecipeView extends AppCompatActivity {
-    Recipe recipe;
-    HashMap<String, String> ingredients = new HashMap<>();
-    HashMap<String, String> steps = new HashMap<>();
     TextToSpeech currentStepTTS;
     Button readNextStep;
-    int currentStepNum = 1;
-    int stepNum = 1;
-    int ingrNum = 1;
+    Button readPrevStep;
+    Button readThisStep;
+    List<String> steps=new ArrayList<String>();
+    int currentStepNum = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
-        DatabaseReference mDatabase;
-        readNextStep =(Button)findViewById(R.id.ttsButton);
+        View ingredientSide = findViewById(R.id.front_recipe);
+        View stepsSide = findViewById(R.id.back_recipe);
+
+        readNextStep =(Button)findViewById(R.id.readNextStep);
+        readPrevStep =(Button)findViewById(R.id.readPrevStep);
+        readThisStep =(Button)findViewById(R.id.readThisStep);
+
         currentStepTTS = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+
             @Override
             public void onInit(int status) {
                 if(status != TextToSpeech.ERROR) {
+                    //fancy UK voice
                     currentStepTTS.setLanguage(Locale.UK);
                 }
             }
@@ -49,42 +48,72 @@ public class RecipeView extends AppCompatActivity {
 
         Intent intent = getIntent();
         HashMap<String, String> IngHashMap = (HashMap<String, String>) intent.getSerializableExtra("IngHashMap");
-        HashMap<String, String> StepHashMap = (HashMap<String, String>) intent.getSerializableExtra("StepHashMap");
+        final HashMap<String, String> StepHashMap = (HashMap<String, String>) intent.getSerializableExtra("StepHashMap");
 
         TextView ShowIngs = (TextView)findViewById(R.id.ingredientsList);
         for(Map.Entry<String,String > entry : IngHashMap.entrySet()){
-            ShowIngs.setText(ShowIngs.getText() + "\n" + entry.getValue());
+            ShowIngs.setText(entry.getValue()+ "\n" + ShowIngs.getText());
         }
 
         TextView ShowSteps = (TextView)findViewById(R.id.stepsList);
         for(Map.Entry<String,String > entry : StepHashMap.entrySet()){
-            ShowSteps.setText(ShowSteps.getText() + "\n" + entry.getValue());
+            ShowSteps.setText(entry.getValue()+ "\n" +ShowSteps.getText());
+        }
+
+        CharSequence charSequence = ShowSteps.getText();
+        final StringBuilder sb = new StringBuilder(charSequence.length());
+        sb.append(charSequence);
+        String scannerIn =sb.toString();
+        Scanner s = new Scanner(scannerIn);
+        while(s.hasNextLine()) {
+            steps.add(s.nextLine());
         }
 
 
         readNextStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //if we want it to be loopable
-                if (currentStepNum > steps.size()) {
-                    currentStepNum = 1;
-                }
+                if(currentStepNum < steps.size()) {
+                    currentStepNum++;
+                    if (currentStepTTS.isSpeaking()) {
+                        currentStepTTS.stop();
+                    }
+                    String toSpeak = steps.get(currentStepNum);
+                    currentStepTTS.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null, null);
 
-                //dont talk over each other
+                }
+            }
+        });
+
+        readPrevStep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(currentStepNum >= 0 ) {
+                    currentStepNum--;
+                    if (currentStepTTS.isSpeaking()) {
+                        currentStepTTS.stop();
+                    }
+                    String toSpeak = steps.get(currentStepNum);
+                    currentStepTTS.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null, null);
+                }
+            }
+        });
+
+        readThisStep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 if (currentStepTTS.isSpeaking()) {
                     currentStepTTS.stop();
                 }
-
-                //what to say
-                TextView ShowSteps = (TextView)findViewById(R.id.stepsList);
-                CharSequence charSequence = ShowSteps.getText();
-                final StringBuilder sb = new StringBuilder(charSequence.length());
-                sb.append(charSequence);
-                String toSpeak = sb.toString();
+                String toSpeak = steps.get(currentStepNum);
                 currentStepTTS.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null, null);
-            }
+                }
 
         });
+    }
+
+    public void flipCard(View view){
+
     }
 
     public void onPause(){
