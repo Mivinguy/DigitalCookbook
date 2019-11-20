@@ -87,7 +87,7 @@ public class RecipeView extends AppCompatActivity implements SensorEventListener
         for(Map.Entry<String,String > entry : StepHashMap.entrySet()){
             ShowSteps.setText(ShowSteps.getText() + "\n" + entry.getValue());
         }
-
+        
         ImageView img = (ImageView)findViewById(R.id.recipeImage);
         imageFileName = imageFileName.substring(0, imageFileName.lastIndexOf('.'));
         int id = getResources().getIdentifier(imageFileName, "drawable", getPackageName());
