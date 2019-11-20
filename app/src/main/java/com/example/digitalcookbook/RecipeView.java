@@ -78,7 +78,7 @@ public class RecipeView extends AppCompatActivity {
         readNextStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(currentStepNum < steps.size()) {
+                if(currentStepNum < steps.size()-1) {
                     currentStepNum++;
                     if (currentStepTTS.isSpeaking()) {
                         currentStepTTS.stop();
