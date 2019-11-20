@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:onClick="flipCard">
+    android:onClick="flipper"
+    >
 
 
     <FrameLayout
@@ -19,7 +20,8 @@
         android:id="@+id/back_recipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center">
+        android:gravity="center"
+        android:visibility="gone">
         <include layout="@layout/back_recipe" />
 
     </FrameLayout>

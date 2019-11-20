@@ -3,6 +3,7 @@ package com.example.digitalcookbook;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -18,29 +19,33 @@ import java.util.Scanner;
 
 public class RecipeView extends AppCompatActivity {
     TextToSpeech currentStepTTS;
+    View ingredientSide;
+    View stepsSide;
+    Boolean showBack = false;
     Button readNextStep;
     Button readPrevStep;
     Button readThisStep;
-    List<String> steps=new ArrayList<String>();
+
+    List<String> steps = new ArrayList<String>();
     int currentStepNum = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
-        View ingredientSide = findViewById(R.id.front_recipe);
-        View stepsSide = findViewById(R.id.back_recipe);
+
 
         readNextStep =(Button)findViewById(R.id.readNextStep);
         readPrevStep =(Button)findViewById(R.id.readPrevStep);
         readThisStep =(Button)findViewById(R.id.readThisStep);
+        ingredientSide = (View) findViewById(R.id.front_recipe);
+        stepsSide = findViewById(R.id.back_recipe);
 
         currentStepTTS = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
 
             @Override
             public void onInit(int status) {
                 if(status != TextToSpeech.ERROR) {
-                    //fancy UK voice
                     currentStepTTS.setLanguage(Locale.UK);
                 }
             }
@@ -88,7 +93,7 @@ public class RecipeView extends AppCompatActivity {
         readPrevStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(currentStepNum >= 0 ) {
+                if(currentStepNum > 0 ) {
                     currentStepNum--;
                     if (currentStepTTS.isSpeaking()) {
                         currentStepTTS.stop();
@@ -111,11 +116,18 @@ public class RecipeView extends AppCompatActivity {
 
         });
     }
-
-    public void flipCard(View view){
-
+    public void flipper(View v) {
+        currentStepTTS.stop();
+        if (showBack) {
+            ingredientSide.setVisibility(View.VISIBLE);
+            stepsSide.setVisibility(View.GONE);
+            showBack = false;
+        } else {
+            ingredientSide.setVisibility(View.GONE);
+            stepsSide.setVisibility(View.VISIBLE);
+            showBack = true;
+        }
     }
-
     public void onPause(){
         if(currentStepTTS !=null){
             currentStepTTS.stop();
@@ -123,8 +135,6 @@ public class RecipeView extends AppCompatActivity {
         }
         super.onPause();
     }
-
-
 }
 
 
