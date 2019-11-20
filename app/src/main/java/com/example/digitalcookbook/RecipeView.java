@@ -6,6 +6,7 @@ import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -50,6 +51,7 @@ public class RecipeView extends AppCompatActivity {
         Intent intent = getIntent();
         HashMap<String, String> IngHashMap = (HashMap<String, String>) intent.getSerializableExtra("IngHashMap");
         HashMap<String, String> StepHashMap = (HashMap<String, String>) intent.getSerializableExtra("StepHashMap");
+        String imageFileName = (String) intent.getSerializableExtra("ImageFileName");
 
         TextView ShowIngs = (TextView)findViewById(R.id.ingredientsList);
         for(Map.Entry<String,String > entry : IngHashMap.entrySet()){
@@ -61,6 +63,10 @@ public class RecipeView extends AppCompatActivity {
             ShowSteps.setText(ShowSteps.getText() + "\n" + entry.getValue());
         }
 
+        ImageView img = (ImageView)findViewById(R.id.recipeImage);
+        imageFileName = imageFileName.substring(0, imageFileName.lastIndexOf('.'));
+        int id = getResources().getIdentifier(imageFileName, "drawable", getPackageName());
+        img.setImageResource(id);
 
         readNextStep.setOnClickListener(new View.OnClickListener() {
             @Override

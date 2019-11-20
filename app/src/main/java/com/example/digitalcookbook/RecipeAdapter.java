@@ -48,6 +48,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeListViewHolder> {
                 Intent intent = new Intent(v.getContext(), RecipeView.class);
                 intent.putExtra("IngHashMap",recipeList.get(holder1.getAdapterPosition()).getIngredients());
                 intent.putExtra("StepHashMap",recipeList.get(holder1.getAdapterPosition()).getSteps());
+                intent.putExtra("ImageFileName",recipeList.get(holder1.getAdapterPosition()).getImageFileName());
                 v.getContext().startActivity(intent);
             }
         });
