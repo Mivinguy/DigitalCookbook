@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+       />
+    <TextView
+        android:id="@+id/stepsHeader"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="top"
+        android:textSize="25dp"
+        android:text="Steps:" />
+    <TextView
+        android:id="@+id/stepsList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:text="" />
+
+    <Button
+        android:id="@+id/readThisStep"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_gravity="bottom|center"
+        android:background="@drawable/volume" />
+
+    <Button
+        android:id="@+id/readNextStep"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_gravity="bottom|right"
+        android:background="@drawable/right" />
+
+    <Button
+        android:id="@+id/readPrevStep"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_gravity="bottom|left"
+        android:background="@drawable/left" />
+
+</FrameLayout>
