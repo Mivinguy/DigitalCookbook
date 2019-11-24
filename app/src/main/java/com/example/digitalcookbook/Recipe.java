@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 public class Recipe {
     private String image;
+    private String imageFileName;
     private HashMap<String, String> ingredients;
     private HashMap<String, String> steps;
     private String title;
@@ -13,8 +14,9 @@ public class Recipe {
 
     }
 
-    public Recipe(String image, HashMap<String, String> ingredients, HashMap<String, String> steps, String title, String category){
+    public Recipe(String image, String imageFileName, HashMap<String, String> ingredients, HashMap<String, String> steps, String title, String category){
         this.image = image;
+        this.imageFileName = imageFileName;
         this.ingredients = ingredients;
         this.steps = steps;
         this.title = title;
@@ -23,6 +25,10 @@ public class Recipe {
 
     public String getImage() {
         return image;
+    }
+
+    public String getImageFileName() {
+        return imageFileName;
     }
 
     public HashMap<String, String> getIngredients() {
