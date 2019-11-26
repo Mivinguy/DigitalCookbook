@@ -108,10 +108,10 @@ public class RecipeView extends AppCompatActivity implements SensorEventListener
             steps.add(s.nextLine());
         }
         
-        //ImageView img = (ImageView)findViewById(R.id.recipeImage);
+        ImageView img = (ImageView)findViewById(R.id.recipe_image);
         imageFileName = imageFileName.substring(0, imageFileName.lastIndexOf('.'));
         int id = getResources().getIdentifier(imageFileName, "drawable", getPackageName());
-        //img.setImageResource(id);
+        img.setImageResource(id);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         if(sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
