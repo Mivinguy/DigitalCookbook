@@ -95,11 +95,17 @@ public class RecipeView extends AppCompatActivity implements SensorEventListener
         }
 
         TextView ShowSteps = (TextView)findViewById(R.id.stepsList);
+        int count = 1;
+        String stepsText = "";
+        String textToSpeechText = "";
         for(Map.Entry<String,String > entry : StepHashMap.entrySet()){
-            ShowSteps.setText(entry.getValue()+ "\n" +ShowSteps.getText());
+            textToSpeechText += entry.getValue()+ "\n" +ShowSteps.getText();
+            stepsText += count + ". " + entry.getValue()+ "\n" +ShowSteps.getText() +'\n';
+            count++;
         }
+        ShowSteps.setText(stepsText);
 
-        CharSequence charSequence = ShowSteps.getText();
+        CharSequence charSequence = textToSpeechText;
         final StringBuilder sb = new StringBuilder(charSequence.length());
         sb.append(charSequence);
         String scannerIn =sb.toString();

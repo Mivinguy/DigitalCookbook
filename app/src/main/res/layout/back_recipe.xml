@@ -4,47 +4,57 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp"
-       />
-    <TextView
-        android:id="@+id/stepsHeader"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="top"
-        android:textSize="30dp"
-        android:text="Steps:"
-        android:textColor="#000000"/>
-    <TextView
-        android:id="@+id/stepsList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:textSize="20dp"
-        android:text=""
-        android:textColor="#000000"/>
 
-    <Button
-        android:id="@+id/readThisStep"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        android:layout_gravity="bottom|center"
-        android:background="@drawable/volume" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
 
-    <Button
-        android:id="@+id/readNextStep"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        android:layout_gravity="bottom|right"
-        android:background="@drawable/right" />
+        >
+        <TextView
+            android:id="@+id/stepsHeader"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="top"
+            android:textSize="30dp"
+            android:text="Steps:"
+            android:textColor="#000000"/>
+        <TextView
+            android:id="@+id/stepsList"
+            android:layout_width="match_parent"
+            android:layout_height="580dp"
+            android:gravity="center"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="10sp"
+            android:autoSizeMaxTextSize="20sp"
+            android:text=""
+            android:textColor="#000000"/>
 
-    <Button
-        android:id="@+id/readPrevStep"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        android:layout_gravity="bottom|left"
-        android:background="@drawable/left" />
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <Button
+                android:id="@+id/readThisStep"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_gravity="bottom|center"
+                android:background="@drawable/volume" />
+
+            <Button
+                android:id="@+id/readNextStep"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_gravity="bottom|right"
+                android:background="@drawable/right" />
+
+            <Button
+                android:id="@+id/readPrevStep"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_gravity="bottom|left"
+                android:background="@drawable/left" />
+        </FrameLayout>
+    </LinearLayout>
 
 </FrameLayout>
