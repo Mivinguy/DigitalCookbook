@@ -189,8 +189,8 @@ public class RecipeView extends AppCompatActivity implements SensorEventListener
         readThisStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                buttonPressed = true; // turns on sensor
                 if (currentStepTTS.isSpeaking()) {
-                    buttonPressed = true; // turns on sensor
                     currentStepTTS.stop();
                 }
                 String toSpeak = steps.get(currentStepNum);
@@ -284,8 +284,11 @@ public class RecipeView extends AppCompatActivity implements SensorEventListener
                     //float speed = Math.abs(ax + ay + az - prevX - prevY - prevZ) / diffTime * 10000;
                     float speed = Math.abs(ax + az - prevX - prevZ) / diffTime * 10000;
 
-
                     if (speed > SHAKE_THRESHOLD) {
+                        currentStepNum++;
+                        String toSpeak = steps.get(currentStepNum);
+                        currentStepTTS.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null, null);
+
                         Toast.makeText(this, "Device was shaken", Toast.LENGTH_SHORT).show();
                         buttonPressed = false;
                     }
