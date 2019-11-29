@@ -8,31 +8,32 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
 
         >
         <TextView
             android:id="@+id/stepsHeader"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:gravity="top"
-            android:textSize="30dp"
+            android:layout_height="wrap_content"
+            android:gravity="top|center"
+            android:textSize="30sp"
             android:text="Steps:"
             android:textColor="#000000"/>
         <TextView
             android:id="@+id/stepsList"
             android:layout_width="match_parent"
-            android:layout_height="580dp"
+            android:layout_height="0dp"
+            android:layout_weight = "1"
             android:gravity="center"
             android:autoSizeTextType="uniform"
-            android:autoSizeMinTextSize="10sp"
-            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeMinTextSize="6sp"
+            android:autoSizeMaxTextSize="30sp"
             android:text=""
             android:textColor="#000000"/>
 
-        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
             <Button
                 android:id="@+id/readThisStep"
