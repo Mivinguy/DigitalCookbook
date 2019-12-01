@@ -1,39 +1,32 @@
 package com.example.digitalcookbook;
 
 import android.content.Intent;
+import android.hardware.Sensor;
 import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.core.view.GestureDetectorCompat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
-
-import android.os.Vibrator;
-import androidx.core.view.GestureDetectorCompat;
-import android.hardware.Sensor;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.view.MotionEvent;
-import android.widget.Toast;
 import java.lang.StrictMath;
-import android.view.GestureDetector;
 
 public class RecipeView extends AppCompatActivity implements SensorEventListener {
-  Recipe recipe;
-  HashMap<String, String> ingredients = new HashMap<>();
-  // HashMap<String, String> steps = new HashMap<>();
-
   TextToSpeech currentStepTTS;
   View ingredientSide;
   View stepsSide;
@@ -74,7 +67,7 @@ public class RecipeView extends AppCompatActivity implements SensorEventListener
     favoriteButton = (Button) findViewById(R.id.favorite);
     ingredientSide = (View) findViewById(R.id.front_recipe);
     stepsSide = findViewById(R.id.back_recipe);
-
+    TextView ShowIngs = (TextView) findViewById(R.id.ingredientsList);
     currentStepTTS =
         new TextToSpeech(
             getApplicationContext(),
@@ -97,7 +90,6 @@ public class RecipeView extends AppCompatActivity implements SensorEventListener
 
     String imageFileName = (String) intent.getSerializableExtra("ImageFileName");
 
-    TextView ShowIngs = (TextView) findViewById(R.id.ingredientsList);
     for (Map.Entry<String, String> entry : IngHashMap.entrySet()) {
       ShowIngs.setText(entry.getValue() + "\n" + ShowIngs.getText());
     }
@@ -105,22 +97,22 @@ public class RecipeView extends AppCompatActivity implements SensorEventListener
     TextView ShowSteps = (TextView) findViewById(R.id.stepsList);
     int count = 1;
     String stepsText = "";
-    String textToSpeechText = "";
+    ArrayList<String> stepsList = new ArrayList<String>();
+    ArrayList<String> stepsListTextToSpeech = new ArrayList<String>();
     for (Map.Entry<String, String> entry : StepHashMap.entrySet()) {
-      textToSpeechText += entry.getValue() + "\n" + ShowSteps.getText();
-      stepsText += count + ". " + entry.getValue() + "\n";
+      stepsList.add(entry.getValue() + "\n");
+      stepsListTextToSpeech.add(entry.getValue() + "\n");
+    }
+    while (!stepsList.isEmpty()) {
+      stepsText += count + ". " + stepsList.get(stepsList.size() - 1) + "\n";
+      stepsList.remove(stepsList.size() - 1);
       count++;
     }
-    ShowSteps.setText(stepsText);
-
-    CharSequence charSequence = textToSpeechText;
-    final StringBuilder sb = new StringBuilder(charSequence.length());
-    sb.append(charSequence);
-    String scannerIn = sb.toString();
-    Scanner s = new Scanner(scannerIn);
-    while (s.hasNextLine()) {
-      steps.add(s.nextLine());
+    while (!stepsListTextToSpeech.isEmpty()) {
+      steps.add(stepsListTextToSpeech.get(stepsListTextToSpeech.size() - 1));
+      stepsListTextToSpeech.remove(stepsListTextToSpeech.size() - 1);
     }
+    ShowSteps.setText(stepsText);
 
     ImageView img = (ImageView) findViewById(R.id.recipe_image);
     imageFileName = imageFileName.substring(0, imageFileName.lastIndexOf('.'));
@@ -214,11 +206,24 @@ public class RecipeView extends AppCompatActivity implements SensorEventListener
         new View.OnClickListener() {
           @Override
           public void onClick(View v) {
-            if (isFavorited) {
+            if (!isFavorited) {
               favoriteButton.setVisibility(View.VISIBLE);
-
+              isFavorited = true;
             } else {
               favoriteButton.setVisibility(View.GONE);
+            }
+          }
+        });
+
+    favoriteButton.setOnClickListener(
+        new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            if (isFavorited) {
+              favoriteButton.setVisibility(View.GONE);
+              isFavorited = false;
+            } else {
+              favoriteButton.setVisibility(View.VISIBLE);
             }
           }
         });
