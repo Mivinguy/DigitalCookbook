@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:onClick="flipper"
-    >
+    android:onClick="flipper">
 
+
+    <Button
+        android:id="@+id/unfavorite"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/button_unfave" />
+
+    <Button
+        android:id="@+id/favorite"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/button_fave"
+        android:visibility="gone" />
 
     <FrameLayout
         android:id="@+id/front_recipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <include layout="@layout/front_recipe" />
 
 
@@ -22,6 +34,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:visibility="gone">
+
         <include layout="@layout/back_recipe" />
 
     </FrameLayout>
