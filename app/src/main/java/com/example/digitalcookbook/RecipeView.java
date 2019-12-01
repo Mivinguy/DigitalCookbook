@@ -97,23 +97,32 @@ public class RecipeView extends AppCompatActivity implements SensorEventListener
         TextView ShowSteps = (TextView)findViewById(R.id.stepsList);
         int count = 1;
         String stepsText = "";
-        String textToSpeechText = "";
+        ArrayList<String> stepsList = new ArrayList<String>();
+        ArrayList<String> stepsListTextToSpeech = new ArrayList<String>();
         for(Map.Entry<String,String > entry : StepHashMap.entrySet()){
-            textToSpeechText += entry.getValue()+ "\n" +ShowSteps.getText();
-            stepsText += count + ". " + entry.getValue()+ "\n" +ShowSteps.getText() +'\n';
-            count++;
+            stepsList.add(entry.getValue()+ "\n");
+            stepsListTextToSpeech.add(entry.getValue()+ "\n");
+        }
+        while(!stepsList.isEmpty()){
+            stepsText += count + ". " +  stepsList.get(stepsList.size()-1) + "\n";
+            stepsList.remove(stepsList.size()-1);
+            count ++;
+        }
+        while(!stepsListTextToSpeech.isEmpty()){
+            steps.add(stepsListTextToSpeech.get(stepsListTextToSpeech.size()-1));
+            stepsListTextToSpeech.remove(stepsListTextToSpeech.size()-1);
         }
         ShowSteps.setText(stepsText);
 
-        CharSequence charSequence = textToSpeechText;
-        final StringBuilder sb = new StringBuilder(charSequence.length());
-        sb.append(charSequence);
-        String scannerIn =sb.toString();
-        Scanner s = new Scanner(scannerIn);
-        while(s.hasNextLine()) {
-            steps.add(s.nextLine());
-        }
-        
+//        CharSequence charSequence = textToSpeechText;
+//        final StringBuilder sb = new StringBuilder(charSequence.length());
+//        sb.append(charSequence);
+//        String scannerIn =sb.toString();
+//        Scanner s = new Scanner(scannerIn);
+//        while(s.hasNextLine()) {
+//            steps.add(s.nextLine());
+//        }
+//
         ImageView img = (ImageView)findViewById(R.id.recipe_image);
         imageFileName = imageFileName.substring(0, imageFileName.lastIndexOf('.'));
         int id = getResources().getIdentifier(imageFileName, "drawable", getPackageName());
