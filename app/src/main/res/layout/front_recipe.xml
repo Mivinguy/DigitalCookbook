@@ -5,37 +5,37 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
 
         >
 
         <ImageView
             android:id="@+id/recipe_image"
-            android:adjustViewBounds="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true" />
 
         <TextView
             android:id="@+id/stepsHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="30sp"
-            android:text="Ingredients:"
             android:gravity="center"
-            android:textColor="#000000"/>
+            android:text="Ingredients:"
+            android:textColor="#000000"
+            android:textSize="30sp" />
 
         <TextView
             android:id="@+id/ingredientsList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:autoSizeTextType="uniform"
-            android:autoSizeMinTextSize="6sp"
             android:autoSizeMaxTextSize="30sp"
+            android:autoSizeMinTextSize="6sp"
             android:autoSizeStepGranularity="2sp"
-            android:textColor="#000000"/>
+            android:autoSizeTextType="uniform"
+            android:gravity="center"
+            android:textColor="#000000" />
 
     </LinearLayout>
 

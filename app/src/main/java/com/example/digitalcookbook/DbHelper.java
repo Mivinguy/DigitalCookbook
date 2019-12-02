@@ -13,77 +13,64 @@ import java.util.ArrayList;
 
 public class DbHelper {
 
-    DatabaseReference db;
-    Boolean saved=null;
-    ArrayList<Recipe> recipeList =new ArrayList<>();
+  DatabaseReference db;
+  Boolean saved = null;
+  ArrayList<Recipe> recipeList = new ArrayList<>();
 
-    public DbHelper(DatabaseReference db) {
-        this.db = db;
+  public DbHelper(DatabaseReference db) {
+    this.db = db;
+  }
+
+  // Create new Recipe
+  public Boolean save(Recipe recipe) {
+    if (recipe == null) {
+      saved = false;
+    } else {
+      try {
+        db.child(recipe.getCategory()).push().setValue(recipe);
+        saved = true;
+      } catch (DatabaseException e) {
+        e.printStackTrace();
+        saved = false;
+      }
     }
 
-    // Create new Recipe
-    public Boolean save(Recipe recipe) {
-        if(recipe==null)
-        {
-            saved=false;
-        }else {
-            try
-            {
-                db.child(recipe.getCategory()).push().setValue(recipe);
-                saved=true;
-            }catch (DatabaseException e)
-            {
-                e.printStackTrace();
-                saved=false;
-            }
+    return saved;
+  }
 
-        }
+  // Read from database
+  public ArrayList<Recipe> read() {
+    db.addChildEventListener(
+        new ChildEventListener() {
+          @Override
+          public void onChildAdded(DataSnapshot dataSnapshot, @Nullable String s) {
+            fetchData(dataSnapshot);
+          }
 
-        return saved;
-    }
+          @Override
+          public void onChildChanged(DataSnapshot dataSnapshot, @Nullable String s) {
+            fetchData(dataSnapshot);
+          }
 
-    //Read from database
-    public ArrayList<Recipe> read()
-    {
-        db.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, @Nullable String s) {
-                fetchData(dataSnapshot);
-            }
+          @Override
+          public void onChildRemoved(DataSnapshot dataSnapshot) {}
 
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, @Nullable  String s) {
-                fetchData(dataSnapshot);
+          @Override
+          public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
 
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
+          @Override
+          public void onCancelled(DatabaseError databaseError) {}
         });
 
-        return recipeList;
-    }
+    return recipeList;
+  }
 
-    // Read data
-    private void fetchData(DataSnapshot dataSnapshot)
-    {
-        recipeList.clear();
-        for (DataSnapshot ds : dataSnapshot.getChildren())
-        {
-            Recipe recipe =ds.getValue(Recipe.class);
-            recipeList.add(recipe);
-        }
+  // Read data
+  private void fetchData(DataSnapshot dataSnapshot) {
+    recipeList.clear();
+    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+      Recipe recipe = ds.getValue(Recipe.class);
+      recipeList.add(recipe);
     }
+  }
 }
