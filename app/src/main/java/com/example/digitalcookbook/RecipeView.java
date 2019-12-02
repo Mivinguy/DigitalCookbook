@@ -114,10 +114,46 @@ public class RecipeView extends AppCompatActivity implements SensorEventListener
     }
     ShowSteps.setText(stepsText);
 
-    ImageView img = (ImageView) findViewById(R.id.recipe_image);
-    imageFileName = imageFileName.substring(0, imageFileName.lastIndexOf('.'));
-    int id = getResources().getIdentifier(imageFileName, "drawable", getPackageName());
-    img.setImageResource(id);
+        TextView ShowSteps = (TextView)findViewById(R.id.stepsList);
+        int count = 1;
+        String stepsText = "";
+        ArrayList<String> stepsList = new ArrayList<String>();
+        ArrayList<String> stepsListTextToSpeech = new ArrayList<String>();
+        for(Map.Entry<String,String > entry : StepHashMap.entrySet()){
+            stepsList.add(entry.getValue()+ "\n");
+            stepsListTextToSpeech.add(entry.getValue()+ "\n");
+        }
+        while(!stepsList.isEmpty()){
+            stepsText += count + ". " +  stepsList.get(stepsList.size()-1) + "\n";
+            stepsList.remove(stepsList.size()-1);
+            count ++;
+        }
+        while(!stepsListTextToSpeech.isEmpty()){
+            steps.add(stepsListTextToSpeech.get(stepsListTextToSpeech.size()-1));
+            stepsListTextToSpeech.remove(stepsListTextToSpeech.size()-1);
+        }
+        ShowSteps.setText(stepsText);
+
+//        CharSequence charSequence = textToSpeechText;
+//        final StringBuilder sb = new StringBuilder(charSequence.length());
+//        sb.append(charSequence);
+//        String scannerIn =sb.toString();
+//        Scanner s = new Scanner(scannerIn);
+//        while(s.hasNextLine()) {
+//            steps.add(s.nextLine());
+//        }
+//
+        ImageView img = (ImageView)findViewById(R.id.recipe_image);
+        imageFileName = imageFileName.substring(0, imageFileName.lastIndexOf('.'));
+        int id = getResources().getIdentifier(imageFileName, "drawable", getPackageName());
+        img.setImageResource(id);
+
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        if(sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            threshold = accelerometer.getMaximumRange()/8;
+        }
+        vibrator = (Vibrator)getSystemService(VIBRATOR_SERVICE);
 
     sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
     if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
