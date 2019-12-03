@@ -172,6 +172,7 @@ public class RecipeView extends AppCompatActivity implements SensorEventListener
           @Override
           public void onClick(View v) {
             if (currentStepNum < steps.size() - 1) {
+              timeSinceLastTTS = System.currentTimeMillis();
               currentStepNum++;
               if (currentStepTTS.isSpeaking()) {
                 currentStepTTS.stop();
@@ -187,6 +188,7 @@ public class RecipeView extends AppCompatActivity implements SensorEventListener
           @Override
           public void onClick(View v) {
             if (currentStepNum > 0) {
+              timeSinceLastTTS = System.currentTimeMillis();
               currentStepNum--;
               if (currentStepTTS.isSpeaking()) {
                 currentStepTTS.stop();
@@ -321,7 +323,7 @@ public class RecipeView extends AppCompatActivity implements SensorEventListener
           // float speed = Math.abs(ax + ay + az - prevX - prevY - prevZ) / diffTime * 10000;
           float speed = Math.abs(ax + az - prevX - prevZ) / diffTime * 10000;
 
-          if (speed > SHAKE_THRESHOLD & currTime - timeSinceLastTTS > 3000 & currentStepNum < steps.size() - 1) {
+          if (speed > SHAKE_THRESHOLD & currTime - timeSinceLastTTS > 4000 & currentStepNum < steps.size() - 1) {
             currentStepNum++;
             String toSpeak = steps.get(currentStepNum);
             currentStepTTS.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null, null);
