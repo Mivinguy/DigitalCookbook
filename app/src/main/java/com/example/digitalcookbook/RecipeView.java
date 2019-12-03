@@ -10,6 +10,8 @@ import android.os.Vibrator;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -38,6 +40,9 @@ public class RecipeView extends AppCompatActivity implements SensorEventListener
   Button favoriteButton;
   Button unfavoriteButton;
 
+  private List<favRecipe> mFavList;
+  private favoritesDB mFavDB;
+
   List<String> steps = new ArrayList<String>();
   int currentStepNum = 0;
 
@@ -59,6 +64,8 @@ public class RecipeView extends AppCompatActivity implements SensorEventListener
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_recipe);
+
+    mFavDB = favoritesDB.getInstance(getApplicationContext());
 
     readNextStep = (Button) findViewById(R.id.readNextStep);
     readPrevStep = (Button) findViewById(R.id.readPrevStep);
@@ -85,10 +92,16 @@ public class RecipeView extends AppCompatActivity implements SensorEventListener
     HashMap<String, String> IngHashMap =
         (HashMap<String, String>) intent.getSerializableExtra("IngHashMap");
 
+    final String ing = IngHashMap.toString();
+
     final HashMap<String, String> StepHashMap =
         (HashMap<String, String>) intent.getSerializableExtra("StepHashMap");
 
+    final String step = StepHashMap.toString();
+
     String imageFileName = (String) intent.getSerializableExtra("ImageFileName");
+    final String image = imageFileName;
+    final String title = (String) intent.getSerializableExtra("Title");
 
     for (Map.Entry<String, String> entry : IngHashMap.entrySet()) {
       ShowIngs.setText(entry.getValue() + "\n" + ShowIngs.getText());
@@ -218,21 +231,30 @@ public class RecipeView extends AppCompatActivity implements SensorEventListener
             } else {
               favoriteButton.setVisibility(View.GONE);
             }
+
+            favRecipe recipe = new favRecipe();
+            recipe.setTitle(title);
+            recipe.setImageFileName(image);
+            recipe.setIngredients(ing);
+            recipe.setSteps(step);
+            mFavDB.addFavRecipe(recipe);
           }
         });
 
     favoriteButton.setOnClickListener(
-        new View.OnClickListener() {
-          @Override
-          public void onClick(View v) {
-            if (isFavorited) {
-              favoriteButton.setVisibility(View.GONE);
-              isFavorited = false;
-            } else {
-              favoriteButton.setVisibility(View.VISIBLE);
-            }
-          }
-        });
+            new View.OnClickListener() {
+              @Override
+              public void onClick(View v) {
+                if (isFavorited) {
+                  favoriteButton.setVisibility(View.GONE);
+                  isFavorited = false;
+                } else {
+                  favoriteButton.setVisibility(View.VISIBLE);
+                }
+                deleteQuestion(image);
+              }
+            });
+
   }
 
   public void flipper(View v) {
@@ -334,6 +356,39 @@ public class RecipeView extends AppCompatActivity implements SensorEventListener
       }
     }
   }
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    // Inflate the menu; this adds items to the action bar if it is present.
+    getMenuInflater().inflate(R.menu.menu_main, menu);
+    return true;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    // Handle action bar item clicks here. The action bar will
+    // automatically handle clicks on the Home/Up button, so long
+    // as you specify a parent activity in AndroidManifest.xml.
+
+    switch (item.getItemId()) {
+      case R.id.goToFavorite:
+        Intent intent = new Intent(RecipeView.this, viewFavorites.class);
+        startActivity(intent);
+        return true;
+      default:
+        return super.onOptionsItemSelected(item);
+    }
+  }
+
+  private favRecipe mDeletedRecipe;
+
+
+  private void deleteQuestion(String image) {
+    if (true) {
+      mFavDB.deleteFav(image);
+    }
+  }
+
 
   @Override
   public void onAccuracyChanged(Sensor sensor, int accuracy) {}

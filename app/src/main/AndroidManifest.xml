@@ -21,6 +21,7 @@
         </activity>
         <activity android:name=".CategoryRecipes" />
         <activity android:name=".RecipeView"/>
+        <activity android:name=".viewFavorites"/>
     </application>
 
 </manifest>

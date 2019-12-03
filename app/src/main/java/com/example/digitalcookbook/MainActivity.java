@@ -138,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("The read failed: " + databaseError.getCode());
           }
         });
+
   }
 
   private void setSingleEvent(GridLayout mainGrid) {
@@ -161,6 +162,10 @@ public class MainActivity extends AppCompatActivity {
       tv.setTextColor(Color.BLACK);
       tv.setGravity(Gravity.CENTER | Gravity.CENTER_VERTICAL);
       cardView.addView(tv);
+
+      //DATA IS IN THE DATABASE, YOU NEED TO ADD A FAVORITES NODE TO FIREBASE, WHEN CLICKED IT WILL
+        // SEND AN INTENT TO CategoryRecipes.class, WHEN THAT ACTIVITY BEGINS, CHECK THE INTENT,
+        // IF THE INTENT CONTAINS "FAVORITES", START AN ACTIVITY TO DISPLAY WHATS IN THE SQLITE DB
 
       final int selected = i;
       cardView.setOnClickListener(
@@ -211,25 +216,26 @@ public class MainActivity extends AppCompatActivity {
     }
   }
 
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    // Inflate the menu; this adds items to the action bar if it is present.
-    getMenuInflater().inflate(R.menu.menu_main, menu);
-    return true;
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    // Handle action bar item clicks here. The action bar will
-    // automatically handle clicks on the Home/Up button, so long
-    // as you specify a parent activity in AndroidManifest.xml.
-    int id = item.getItemId();
-
-    //noinspection SimplifiableIfStatement
-    if (id == R.id.action_settings) {
-      return true;
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
     }
 
-    return super.onOptionsItemSelected(item);
-  }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+
+        switch (item.getItemId()) {
+            case R.id.goToFavorite:
+                Intent intent = new Intent(MainActivity.this, viewFavorites.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }
