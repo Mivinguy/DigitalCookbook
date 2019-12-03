@@ -48,10 +48,24 @@ public class viewFavorites extends AppCompatActivity {
 
         for(int i = 0; i < mFavList.size(); i++){
             mRecipe = mFavList.get(i);
-            result.append(mRecipe.getTitle());
-            result.append(mRecipe.getImageFileName());
-            result.append(mRecipe.getIngredients());
-            result.append(mRecipe.getSteps());
+            result.append(mRecipe.getTitle() + "\n");
+            //result.append(mRecipe.getImageFileName());
+            String ing = mRecipe.getIngredients().replaceAll(",", "\n");
+            String lines[] = ing.split("\\r?\\n");
+            result.append("Ingredients: \n");
+            for(int z = 0; z < lines.length - 1; z++){
+                if(lines[z].length() > 7)
+                    result.append(lines[z].substring(7) + "\n");
+            }
+            result.append("Steps: \n");
+            String stp = mRecipe.getSteps().replaceAll(",", "\n");
+            lines = stp.split("\\r?\\n");
+            int count = 1;
+            for(int z = 0; z < lines.length - 1; z++){
+                if(lines[z].length() > 7)
+                    result.append(count + ". " + lines[z].substring(7) + "\n");
+                count++;
+            }
             result.append("\n\n");
         }
         mText.setText(result);
