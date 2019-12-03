@@ -54,11 +54,13 @@ public class RecipeView extends AppCompatActivity implements SensorEventListener
   float prevZ;
 
   boolean buttonPressed = false;
+  long timeSinceLastTTS = System.currentTimeMillis();
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_recipe);
+    
 
     readNextStep = (Button) findViewById(R.id.readNextStep);
     readPrevStep = (Button) findViewById(R.id.readPrevStep);
@@ -200,6 +202,7 @@ public class RecipeView extends AppCompatActivity implements SensorEventListener
           @Override
           public void onClick(View v) {
             buttonPressed = true; // turns on sensor
+            timeSinceLastTTS = System.currentTimeMillis();
             if (currentStepTTS.isSpeaking()) {
               currentStepTTS.stop();
             }
@@ -318,13 +321,14 @@ public class RecipeView extends AppCompatActivity implements SensorEventListener
           // float speed = Math.abs(ax + ay + az - prevX - prevY - prevZ) / diffTime * 10000;
           float speed = Math.abs(ax + az - prevX - prevZ) / diffTime * 10000;
 
-          if (speed > SHAKE_THRESHOLD) {
+          if (speed > SHAKE_THRESHOLD & currTime - timeSinceLastTTS > 3000 & currentStepNum < steps.size() - 1) {
             currentStepNum++;
             String toSpeak = steps.get(currentStepNum);
             currentStepTTS.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null, null);
 
-            Toast.makeText(this, "Device was shaken", Toast.LENGTH_SHORT).show();
-            buttonPressed = false;
+            Toast.makeText(this, "Next Step", Toast.LENGTH_SHORT).show();
+            timeSinceLastTTS = currTime;
+            //buttonPressed = false;
           }
 
           prevX = ax;
