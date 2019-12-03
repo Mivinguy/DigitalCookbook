@@ -50,20 +50,24 @@ public class viewFavorites extends AppCompatActivity {
             mRecipe = mFavList.get(i);
             result.append(mRecipe.getTitle() + "\n");
             //result.append(mRecipe.getImageFileName());
-            String ing = mRecipe.getIngredients().replaceAll(",", "\n");
-            String lines[] = ing.split("\\r?\\n");
+            String ing = mRecipe.getIngredients();
+            String lines[] = ing.split("=");
             result.append("Ingredients: \n");
-            for(int z = 0; z < lines.length - 1; z++){
-                if(lines[z].length() > 7)
-                    result.append(lines[z].substring(7) + "\n");
+            for(int z = lines.length - 1; z > 0; z--){
+                if(lines[z].length() > 7 & z != lines.length-1)
+                    result.append(lines[z].substring(0, lines[z].length()-7) + "\n");
+                else
+                    result.append(lines[z].substring(0, lines[z].length()-1) + "\n");
             }
             result.append("Steps: \n");
-            String stp = mRecipe.getSteps().replaceAll(",", "\n");
+            String stp = mRecipe.getSteps().replaceAll("=", "\n");
             lines = stp.split("\\r?\\n");
             int count = 1;
-            for(int z = 0; z < lines.length - 1; z++){
-                if(lines[z].length() > 7)
-                    result.append(count + ". " + lines[z].substring(7) + "\n");
+            for(int z = lines.length - 1; z > 0; z--){
+                if(lines[z].length() > 7 & z != lines.length-1)
+                    result.append(count + ". " + lines[z].substring(0, lines[z].length()-7) + "\n");
+                else
+                    result.append(count + ". " + lines[z].substring(0, lines[z].length()-1) + "\n");
                 count++;
             }
             result.append("\n\n");
